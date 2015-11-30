@@ -26,9 +26,9 @@ void GameController::startNewGame(QWidget* parent, QListWidget* list, int x_shif
 
 void GameController::saveGameToFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(parentWindow, "Save Game", "*.txt");
+    QString fileName = QFileDialog::getSaveFileName(parentWindow, "Save Game", "*.txt");
     while (fileName == NULL) {
-        fileName = QFileDialog::getOpenFileName(parentWindow, "Save Game", "*.txt");
+        fileName = QFileDialog::getSaveFileName(parentWindow, "Save Game", "*.txt");
     }
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text))
