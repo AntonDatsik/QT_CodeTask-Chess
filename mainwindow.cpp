@@ -3,6 +3,7 @@
 #include "playwindow.h"
 #include <QPushButton>
 #include <QDesktopWidget>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,6 +50,11 @@ void MainWindow::handleClickLoadButton()
         this->hide();
     }
     else
+    {
+        QMessageBox msBox;
+        msBox.setText("Invalid file for loading");
+        msBox.exec();
         delete loadedGameWindow;
+    }
 }
 

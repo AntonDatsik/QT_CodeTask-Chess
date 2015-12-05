@@ -55,7 +55,10 @@ void LoadedGameWindow::handleClickButtonLoadGame()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Open Saved Game", "*.txt");
     if (fileName == NULL) return;
-    controller->loadGame(fileName);
+    if (!controller->loadGame(fileName))
+    {
+
+    }
 }
 
 void LoadedGameWindow::handleClickButtonNewGame()
