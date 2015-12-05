@@ -43,7 +43,12 @@ void MainWindow::handleClickStartButton()
 void MainWindow::handleClickLoadButton()
 {
     loadedGameWindow = new LoadedGameWindow(this);
-    loadedGameWindow->show();
-    this->hide();
+    if (loadedGameWindow->initLoadingFile())
+    {
+        loadedGameWindow->show();
+        this->hide();
+    }
+    else
+        delete loadedGameWindow;
 }
 

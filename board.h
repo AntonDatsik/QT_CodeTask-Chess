@@ -14,7 +14,7 @@ public:
     QLabel topBorders[8];
     BoardSquare squares[8][8];
     void initStartPosition();
-    void loadFromFile(QTextStream& stream);
+    bool loadFromFile(QTextStream& stream);
     void saveToFile(QTextStream& stream);
 //    friend void operator>> (std::ifstream& ifile, Board& board);
 //    friend void operator << (std::ofstream& ifile, Board& board);

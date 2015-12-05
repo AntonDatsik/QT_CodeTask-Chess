@@ -15,12 +15,15 @@ class LoadedGameWindow : public QMainWindow
 public:
     explicit LoadedGameWindow(QWidget *parent = 0);
     ~LoadedGameWindow();
+    bool initLoadingFile();
 private slots:
     void handleClickButtonNext();
     void handleCickButtonPrev();
     void handleClickButtonNewGame();
     void handleClickButtonLoadGame();
+
 private:
+
     Ui::LoadedGameWindow *ui;
     QWidget* parent;
     LoadWindowController* controller;

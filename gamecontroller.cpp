@@ -27,14 +27,18 @@ void GameController::startNewGame(QWidget* parent, QListWidget* list, int x_shif
 void GameController::saveGameToFile()
 {
     QString fileName = QFileDialog::getSaveFileName(parentWindow, "Save Game", "*.txt");
-    while (fileName == NULL) {
-        fileName = QFileDialog::getSaveFileName(parentWindow, "Save Game", "*.txt");
+    if (fileName == NULL)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Load file error!");
+        msgBox.exec();
+        return;
     }
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
-        board->saveToFile(stream);
+        //board->saveToFile(stream);
         for (int i = 0; i < historyList->count(); ++i)
         {
             stream << historyList->item(i)->text() << "\n";

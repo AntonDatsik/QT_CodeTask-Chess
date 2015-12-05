@@ -2,6 +2,7 @@
 #include "ui_loadedgamewindow.h"
 #include <QDesktopWidget>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "mainwindow.h"
 
 LoadedGameWindow::LoadedGameWindow(QWidget *parent) :
@@ -32,13 +33,6 @@ LoadedGameWindow::LoadedGameWindow(QWidget *parent) :
     connect(buttonLoadGame, SIGNAL(pressed()), this, SLOT(handleClickButtonLoadGame()));
 
     controller = new LoadWindowController(this);
-
-    QString fileName = QFileDialog::getOpenFileName(parent, "Open Saved Game", "*.txt");
-    while (fileName == NULL)
-    {
-        fileName = QFileDialog::getOpenFileName(parent, "Open Saved Game", "*.txt");
-    }
-    controller->loadGame(fileName);
 }
 
 LoadedGameWindow::~LoadedGameWindow()
@@ -73,4 +67,11 @@ void LoadedGameWindow::handleClickButtonNewGame()
     mainWindow->playWindow->show();
     this->close();
     mainWindow->hide();
+}
+
+bool LoadedGameWindow::initLoadingFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(parent, "Open Saved Game", "*.txt");
+
+    return controller->loadGame(fileName);
 }

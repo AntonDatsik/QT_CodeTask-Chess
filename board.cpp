@@ -4,6 +4,8 @@
 
 #define SIZE_OF_SQUARE 65
 #define SQUARE_BORDER_SIZE 5
+#define BLACK_STYLE "QLabel {background-color: rgb(161, 125, 53);}:hover{background-color: green;}"
+#define WHITE_STYLE "QLabel {background-color: rgb(211, 211, 158);}:hover{background-color: green;}"
 
 Board::Board(QWidget *parent, int x_shift, int y_shift)
 {
@@ -34,9 +36,9 @@ Board::Board(QWidget *parent, int x_shift, int y_shift)
             squares[i][j].setParent(parent);
             squares[i][j].setGeometry(x_shift + i*(SIZE_OF_SQUARE + SQUARE_BORDER_SIZE) + SQUARE_BORDER_SIZE, y_shift + j*(SIZE_OF_SQUARE + SQUARE_BORDER_SIZE) + SQUARE_BORDER_SIZE, SIZE_OF_SQUARE, SIZE_OF_SQUARE);
             if ((i + j) % 2 == 0)
-                squares[i][j].setColor("QLabel {background-color: rgb(161, 125, 53);}:hover{background-color: green;}");
+                squares[i][j].setColor(BLACK_STYLE);
             else
-                squares[i][j].setColor("QLabel {background-color: rgb(211, 211, 158);}:hover{background-color: green;}");
+                squares[i][j].setColor(WHITE_STYLE);
         }
     }
 }
@@ -75,32 +77,4 @@ void Board::initStartPosition()
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
             squares[i][j].update();
-}
-
-void Board::loadFromFile(QTextStream& stream)
-{
-    for (int i = 0; i < 8; ++i)
-        for (int j = 0; j < 8; ++j)
-        {
-            QString strFigNum = stream.readLine();
-            QString strCOlNum = stream.readLine();
-            QString style = stream.readLine();
-            squares[i][j].setStyleSheet(style);
-            squares[i][j].setFigure(static_cast<Figure>(strFigNum.toInt()), static_cast<Color>(strCOlNum.toInt()));
-            squares[i][j].update();
-        }
-}
-
-void Board::saveToFile(QTextStream& stream)
-{
-    for (int i = 0; i < 8; ++i)
-        for (int j = 0; j < 8; ++j)
-        {
-            int figureNumber = static_cast<int>(squares[i][j].getFigure());
-            int colorNumber = static_cast<int>(squares[i][j].getFigureColor());
-            QString style = squares[i][j].getStyleSheet();
-            stream << figureNumber << '\n';
-            stream << colorNumber << '\n';
-            stream << style << '\n';
-        }
 }

@@ -1,4 +1,5 @@
 #include "loadwindowcontroller.h"
+#include <QMessageBox>
 
 LoadWindowController::LoadWindowController(QWidget* parent)
 {
@@ -11,21 +12,34 @@ LoadWindowController::~LoadWindowController()
     delete board;
 }
 
-void LoadWindowController::loadGame(QString fileName)
+bool LoadWindowController::loadGame(QString fileName)
 {
+    if (fileName == NULL) return false;
     list.clear();
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
-        board->loadFromFile(stream);
         while (!stream.atEnd())
         {
-            list.push_back(stream.readLine());
+            QString string = stream.readLine();
+            if (!validateStep(string))
+            {
+                file.close();
+                return false;
+            }
         }
     }
+    else
+        return false;
+
     file.close();
-    index = list.count();
+
+    board->initStartPosition();
+
+    index = 0;
+
+    return true;
 }
 
 void LoadWindowController::prevStep()
@@ -42,44 +56,86 @@ void LoadWindowController::nextStep()
     index++;
 }
 
-void LoadWindowController::replaceFiguresPrev(int index)
+bool LoadWindowController::replaceFiguresPrev(int index)
 {
-    QString step = list.at(index); //variable step has format '3,7 (3-1) : 3,5 (6-0)'
-    int i_from = step.at(0).digitValue() - 1;
-    int j_from = step.at(2).digitValue() - 1;
-    int figure_from = step.at(5).digitValue();
-    int color_from = step.at(7).digitValue();
+    Step step = list.at(index);
 
-    int i_to = step.at(12).digitValue() - 1;
-    int j_to = step.at(14).digitValue() - 1;
-    int figure_to = step.at(17).digitValue();
-    int color_to = step.at(19).digitValue();
-
-    board->squares[i_to][j_to].setFigure(static_cast<Figure>(figure_to), static_cast<Color>(color_to));
-    board->squares[i_to][j_to].update();
+    board->squares[step.iTo][step.jTo].setFigure(static_cast<Figure>(step.figureTo), static_cast<Color>(step.colorTo));
+    board->squares[step.iTo][step.jTo].update();
 
 
-    board->squares[i_from][j_from].setFigure(static_cast<Figure>(figure_from), static_cast<Color>(color_from));
-    board->squares[i_from][j_from].update();
+    board->squares[step.iFrom][step.jFrom].setFigure(static_cast<Figure>(step.figureFrom), static_cast<Color>(step.colorFrom));
+    board->squares[step.iFrom][step.jFrom].update();
+
+    return true;
 }
 
-void LoadWindowController::replaceFiguresNext(int index)
+bool LoadWindowController::replaceFiguresNext(int index)
 {
-    QString step = list.at(index); //varibale step has format '3,7 (3-1) : 3,5 (6-0)'
-    int i_from = step.at(0).digitValue() - 1;
-    int j_from = step.at(2).digitValue() - 1;
-    int figure_from = step.at(5).digitValue();
-    int color_from = step.at(7).digitValue();
+    Step step = list.at(index);
 
-    int i_to = step.at(12).digitValue() - 1;
-    int j_to = step.at(14).digitValue() - 1;
+    board->squares[step.iTo][step.jTo].setFigure(static_cast<Figure>(step.figureFrom), static_cast<Color>(step.colorFrom));
+    board->squares[step.iTo][step.jTo].update();
 
-    board->squares[i_to][j_to].setFigure(static_cast<Figure>(figure_from), static_cast<Color>(color_from));
-    board->squares[i_to][j_to].update();
+    board->squares[step.iFrom][step.jFrom].setFigure(NOTHING, static_cast<Color>(step.colorFrom));
+    board->squares[step.iFrom][step.jFrom].update();
 
+    return true;
+}
 
-    board->squares[i_from][j_from].setFigure(NOTHING, static_cast<Color>(color_from));
-    board->squares[i_from][j_from].update();
+bool LoadWindowController::validateStep(QString string)
+{
+    int iFrom = string.at(0).digitValue() - 1;
+    int jFrom = string.at(2).digitValue() - 1;
+    int figureFrom = string.at(5).digitValue();
+    int colorFrom = string.at(7).digitValue();
+
+    int iTo = string.at(12).digitValue() - 1;
+    int jTo = string.at(14).digitValue() - 1;
+    int figureTo = string.at(17).digitValue();
+    int colorTo = string.at(19).digitValue();
+
+    bool isValidCoordFrom = validateCoord(iFrom, jFrom);
+    bool isValidCoordTo = validateCoord(iTo, jTo);
+
+    if (isValidCoordFrom && isValidCoordTo)
+    {
+        bool result = (validateFigure(figureFrom, colorFrom)&&
+                validateFigure(figureTo, colorTo));
+        if (result)
+        {
+            Step step(iFrom, jFrom, figureFrom, colorFrom, iTo, jTo, figureTo, colorTo);
+            list.push_back(step);
+        }
+        return result;
+    }
+    else
+        return false;
+}
+
+bool LoadWindowController::validateFigure(int figureNum, int figureColor)
+{
+    if (!(figureNum < KING || figureNum > NOTHING))
+    {
+        if (figureNum != NOTHING)
+        {
+            return validateColor(figureColor);
+        }
+        else
+            return true;
+    }
+    else
+        return false;
+}
+
+bool LoadWindowController::validateColor(int figureColor)
+{
+    return !(figureColor < 0 || figureColor > 1);
+}
+
+bool LoadWindowController::validateCoord(int i, int j)
+{
+    return (i >= 0 && i < 8 && j >=0 && j <8);
 }
 
 
