@@ -16,6 +16,7 @@ public:
     void initStartPosition();
     bool loadFromFile(QTextStream& stream);
     void saveToFile(QTextStream& stream);
+    void reload();
 //    friend void operator>> (std::ifstream& ifile, Board& board);
 //    friend void operator << (std::ofstream& ifile, Board& board);
 private:
@@ -23,6 +24,8 @@ private:
     QWidget* parent;
     int x_shift;
     int y_shift;
+    void update();
+
 };
 
 #endif // BOARD_H

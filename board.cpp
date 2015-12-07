@@ -41,6 +41,8 @@ Board::Board(QWidget *parent, int x_shift, int y_shift)
                 squares[i][j].setColor(WHITE_STYLE);
         }
     }
+
+    this->update();
 }
 
 void Board::initStartPosition()
@@ -74,7 +76,19 @@ void Board::initStartPosition()
         squares[i][6].setFigure(PAWN, BLACK);
     }
 
+    this->update();
+}
+
+void Board::update()
+{
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
             squares[i][j].update();
+}
+
+void Board::reload()
+{
+    for (int i = 0; i < 8; ++i)
+        for (int j = 0; j < 8; ++j)
+            squares[i][j].setFigure(NOTHING, BLACK);
 }

@@ -32,7 +32,6 @@ LoadedGameWindow::LoadedGameWindow(QWidget *parent) :
     connect(buttonNewGame, SIGNAL(pressed()), this, SLOT(handleClickButtonNewGame()));
     connect(buttonLoadGame, SIGNAL(pressed()), this, SLOT(handleClickButtonLoadGame()));
 
-    controller = new LoadWindowController(this);
 }
 
 LoadedGameWindow::~LoadedGameWindow()
@@ -54,11 +53,8 @@ void LoadedGameWindow::handleClickButtonNext()
 void LoadedGameWindow::handleClickButtonLoadGame()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Open Saved Game", "*.txt");
-    if (fileName == NULL) return;
-    if (!controller->loadGame(fileName))
-    {
 
-    }
+    controller->loadGame(fileName);
 }
 
 void LoadedGameWindow::handleClickButtonNewGame()
@@ -74,6 +70,8 @@ void LoadedGameWindow::handleClickButtonNewGame()
 
 bool LoadedGameWindow::initLoadingFile()
 {
+    controller = new LoadWindowController(this);
+
     QString fileName = QFileDialog::getOpenFileName(parent, "Open Saved Game", "*.txt");
 
     return controller->loadGame(fileName);

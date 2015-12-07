@@ -15,8 +15,11 @@ LoadWindowController::~LoadWindowController()
 bool LoadWindowController::loadGame(QString fileName)
 {
     if (fileName == NULL) return false;
+
     list.clear();
+    board->reload();
     QFile file(fileName);
+
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
@@ -25,6 +28,7 @@ bool LoadWindowController::loadGame(QString fileName)
             QString string = stream.readLine();
             if (!validateStep(string))
             {
+                index = 0;
                 file.close();
                 return false;
             }
@@ -34,7 +38,6 @@ bool LoadWindowController::loadGame(QString fileName)
         return false;
 
     file.close();
-
     board->initStartPosition();
 
     index = 0;
@@ -85,6 +88,8 @@ bool LoadWindowController::replaceFiguresNext(int index)
 
 bool LoadWindowController::validateStep(QString string)
 {
+    if (string.length() < 19) return false; //format of string  : 5,7 (3-1) : 5,5 (6-0)
+
     int iFrom = string.at(0).digitValue() - 1;
     int jFrom = string.at(2).digitValue() - 1;
     int figureFrom = string.at(5).digitValue();
@@ -137,5 +142,3 @@ bool LoadWindowController::validateCoord(int i, int j)
 {
     return (i >= 0 && i < 8 && j >=0 && j <8);
 }
-
-

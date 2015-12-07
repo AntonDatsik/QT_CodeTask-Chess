@@ -28,7 +28,8 @@ HEADERS  += mainwindow.h \
     gamecontroller.h \
     playwindow.h \
     loadedgamewindow.h \
-    loadwindowcontroller.h
+    loadwindowcontroller.h \
+    step.h
 
 FORMS    += \
     playwindow.ui \
