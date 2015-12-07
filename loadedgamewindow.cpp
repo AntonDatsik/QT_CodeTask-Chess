@@ -54,7 +54,14 @@ void LoadedGameWindow::handleClickButtonLoadGame()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Open Saved Game", "*.txt");
 
-    controller->loadGame(fileName);
+    if (!controller->loadGame(fileName))
+    {
+        QMessageBox msBox;
+        msBox.setText("Invalid file for loading");
+        msBox.exec();
+        parent->show();
+        this->close();
+    }
 }
 
 void LoadedGameWindow::handleClickButtonNewGame()
