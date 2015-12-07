@@ -168,11 +168,22 @@ bool GameController::ChessValidator::validatePawn(BoardSquare *squareFrom, Board
     int yTo = squareTo->pos_y;
 
     if (squareFrom->getFigureColor() == BLACK)
-        return ((xFrom == xTo && ((yTo + 2 == yFrom && yFrom == 6) || yTo + 1 == yFrom))
-            || (yTo + 1 == yFrom && (xTo + 1 == xFrom || xTo-1 == xFrom) && (squareTo->getFigure() != NOTHING && squareTo->getFigureColor() != squareFrom->getFigureColor())));
+
+        if (squareTo->getFigure() == NOTHING)
+        {
+            return xFrom == xTo && ((yTo + 2 == yFrom && yFrom == 6) || yTo + 1 == yFrom);
+        }
+        else
+            return yTo + 1 == yFrom && (xTo + 1 == xFrom || xTo-1 == xFrom) && squareTo->getFigureColor() != squareFrom->getFigureColor();
+
     else
-        return ((xFrom == xTo && ((yTo - 2 == yFrom && yFrom == 1) || yTo - 1 == yFrom))
-            || (yTo - 1 == yFrom && (xTo + 1 == xFrom || xTo-1 == xFrom) && (squareTo->getFigure() != NOTHING && squareTo->getFigureColor() != squareFrom->getFigureColor())));
+
+        if (squareTo->getFigure() == NOTHING)
+        {
+            return xFrom == xTo && ((yTo - 2 == yFrom && yFrom == 1) || yTo - 1 == yFrom);
+        }
+        else
+            return yTo - 1 == yFrom && (xTo + 1 == xFrom || xTo-1 == xFrom) && squareTo->getFigureColor() != squareFrom->getFigureColor();
 }
 
 bool GameController::ChessValidator::validateKing(BoardSquare *squareFrom, BoardSquare *squareTo, Board *board)
